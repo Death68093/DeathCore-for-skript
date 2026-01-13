@@ -1,0 +1,183 @@
+# =========================
+# Login Security
+# Version: 1.0.0
+# By: Death68093
+# =========================
+
+on join:
+    set {server::%uuid of player%::loggedIn} to "none"
+    set {temp::%uuid of player%::loginPrompted} to true
+    wait 2 seconds
+    loginPrompt(player)
+every 5 seconds:
+    loop all players:
+        if {server::%uuid of loop-value%::loggedIn} is "full":
+            continue
+        loginPrompt(loop-value)
+
+
+function loginPrompt(p: player):
+    if {server::%uuid of {_p}%::password} is set:
+        send "&2[Login Security] &a/login <password>" to {_p}
+    else:
+        send "&2[Login Security] &a/register <password> <password>" to {_p}
+
+# ==== BLOCK ACTIONS ====
+on player move:
+    if {server::%uuid of player%::loggedIn} != "full":
+        cancel event
+on leftclick:
+    if {server::%uuid of player%::loggedIn} != "full":
+        cancel event
+on rightclick:
+    if {server::%uuid of player%::loggedIn} != "full":
+        cancel event
+
+# ==== REGISTER / LOGIN ====
+command /register <text> <text>:
+    trigger:
+        if {server::%uuid of player%::password} is set:
+            stop
+        if arg-1 != arg-2:
+            send "&cPasswords do not match!"
+            stop
+        set {server::%uuid of player%::password} to arg-1
+        send "&aRegistered! Use /login <password>"
+
+command /login <text>:
+    trigger:
+        if {server::%uuid of player%::loggedIn} != "none":
+            stop
+        if arg-1 != {server::%uuid of player%::password}:
+            send "&cWrong password!"
+            stop
+        if {server::%uuid of player%::2fa::enabled} is true:
+            set {server::%uuid of player%::loggedIn} to "half"
+            open2FALogin(player)
+        else:
+            set {server::%uuid of player%::loggedIn} to "full"
+            send "&aLogged in!"
+
+# ==== 2FA LOGIN ====
+function open2FALogin(p: player):
+    set {_inv} to a new chest inventory with 3 rows named "2FA Login"
+    set slot 13 of {_inv} to a diamond named "Answer 2FA Question"
+    open {_inv} to {_p}
+
+on inventory click:
+    if name of event-inventory is "2FA Login":
+        cancel event
+        if event-slot is 13:
+            close player's inventory
+            set {temp::%uuid of player%::awaiting2faLogin} to true
+            send "&e%{server::%uuid of player%::2fa::question}%"
+
+# ==== SETTINGS GUI ====
+command /settings:
+    description: Login Security settings
+    trigger:
+        set {_inv} to a new chest inventory with 3 rows named "Login Security"
+        set slot 11 of {_inv} to a gold ingot named "Change Password"
+        set slot 13 of {_inv} to a diamond named "Manage 2FA"
+        open {_inv} to player
+
+on inventory click:
+    if name of event-inventory is "Login Security":
+        cancel event
+        if event-slot is 11:
+            close player's inventory
+            set {temp::%uuid of player%::awaitingPassChange} to true
+            send "&eEnter new password:"
+        else if event-slot is 13:
+            open2FASettings(player)
+
+# ==== CHANGE PASSWORD ====
+on chat:
+    if {temp::%uuid of player%::awaitingPassChange} is true:
+        cancel event
+        set {temp::%uuid of player%::newPass} to message
+        set {temp::%uuid of player%::confirmPass} to true
+        send "&eConfirm password:"
+        wait 5 ticks
+        delete {temp::%uuid of player%::awaitingPassChange}
+        stop
+
+    if {temp::%uuid of player%::confirmPass} is true:
+        cancel event
+        if message != {temp::%uuid of player%::newPass}:
+            send "&cPasswords do not match!"
+            delete {temp::%uuid of player%::*}
+            stop
+        set {server::%uuid of player%::password} to message
+        delete {temp::%uuid of player%::*}
+        send "&aPassword changed!"
+        stop
+
+# ==== 2FA SETTINGS ====
+function open2FASettings(p: player):
+    set {_inv} to a new chest inventory with 3 rows named "2FA Settings"
+    set slot 11 of {_inv} to a diamond named "Change Question"
+    set slot 15 of {_inv} to a barrier named "Disable 2FA"
+    open {_inv} to {_p}
+
+on inventory click:
+    if name of event-inventory is "2FA Settings":
+        cancel event
+        if event-slot is 11:
+            close player's inventory
+            delete {server::%uuid of player%::2fa::*}
+            make player execute command "setup2fa"
+        else if event-slot is 15:
+            delete {server::%uuid of player%::2fa::*}
+            send "&c2FA disabled!"
+
+# ==== SETUP 2FA ====
+command /setup2fa:
+    trigger:
+        set {_inv} to a new chest inventory with 3 rows named "Select 2FA Question"
+        set slot 10 of {_inv} to a diamond named "Favorite Pet"
+        set slot 12 of {_inv} to a diamond named "Grandma"
+        set slot 14 of {_inv} to a diamond named "Dream Job"
+        open {_inv} to player
+
+on inventory click:
+    if name of event-inventory is "Select 2FA Question":
+        cancel event
+        if event-slot is 10:
+            set {_q} to "Favorite pet name?"
+        else if event-slot is 12:
+            set {_q} to "Grandma's name?"
+        else if event-slot is 14:
+            set {_q} to "Dream job?"
+        else:
+            stop
+        close player's inventory
+        set {temp::%uuid of player%::awaiting2faSetup} to true
+        set {temp::%uuid of player%::2faQuestion} to {_q}
+        send "&e%{_q}%"
+
+on chat:
+    if {temp::%uuid of player%::awaiting2faSetup} is true:
+        cancel event
+        set {server::%uuid of player%::2fa::question} to {temp::%uuid of player%::2faQuestion}
+        set {server::%uuid of player%::2fa::answer} to message
+        set {server::%uuid of player%::2fa::enabled} to true
+        delete {temp::%uuid of player%::*}
+        send "&a2FA enabled!"
+        stop
+
+    if {temp::%uuid of player%::awaiting2faLogin} is true:
+        cancel event
+        if message is {server::%uuid of player%::2fa::answer}:
+            set {server::%uuid of player%::loggedIn} to "full"
+            delete {temp::%uuid of player%::*}
+            send "&aLogin complete!"
+        else:
+            send "&cWrong answer!"
+        stop
+
+    if {server::%uuid of player%::loggedIn} != "full":
+        cancel event
+
+on quit:
+    set {server::%uuid of player%::loggedIn} to "none"
