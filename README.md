@@ -53,12 +53,22 @@ All DeathCore plugins are designed with performance and usability in mind. They 
   <summary>EventCore</summary>
   
 **Features:**
-- Event management system with timers and cooldowns  
-- Player life management (revive, kill, revive tokens)  
-- Teleports and warps  
-- Arena management with block control, lava raising, and floor clearing  
-- Quick toggles for PVP, block placing/breaking, and storage access  
-- Host/permissions system integrated with LuckPerms  
+- Event management system with timers and cooldowns (`/setevent`, `/startevent`, `/eventcooldown`, `/timer`)
+- Player life management (revive, kill, revive tokens: `/revive`, `/reviveall`, `/kill`, `/killall`, `/usetoken`, `/accepttoken`, `/denytoken`)
+- Teleports and warps (`/tpalive`, `/tpdead`, `/tpall`, `/setspawn`, `/setwarp`, `/delwarp`, `/viewwarps`)
+- Arena management with block control, lava raising, floor/roof setting, and floor clearing (`/setcorner1`, `/setcorner2`, `/setfloor`, `/setroof`, `/cleararena`, `/dropanvils`, `/raiselava`, `/resetlava`, auto floor clearing)
+- Quick toggles for PVP, block placing/breaking, and storage access (`/pvp`, `/place`, `/break`, `/storage`)
+- Host/permissions system integrated with LuckPerms (`/addhost`, `/remhost`, `/grantperm`, `/revokeperm`)
+- Token system with host approval for revives
+- Win tracking (`/addwin`, `/remwin`)
+- Player gamemode commands (`/gms`, `/gmc`, `/gmsp`, `/gma`)
+- Player healing commands (`/heal`, `/healall`, `/healdead`, `/healalive`)
+- Spectator mode with automatic restriction when disabled (`/spectate`)
+- Event Settings GUI with clickable items and submenus (Tokens, Event Start Settings, Dead Settings, Event Settings)
+- Emotes system in chat (emoji replacement like `:smile:` → 😄)
+- Customizable messages and lore for GUI items
+- Automatic management of alive/dead players on join, death, respawn, and quit
+
 
 </details>
 
