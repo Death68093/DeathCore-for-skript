@@ -20,3 +20,15 @@ Get the newest version here!
      <li><a href="https://github.com/Death68093/DeathCore-for-skript/tree/main/EventCore/SK%20Ver-2.6.5/V1.0.0">LoginSecurity - V1.0.0</a></li>
    </ul>
 </details>
+
+## Admin Panel
+- Coming Soon!
+
+## LifeCore (lifesteal)
+- Coming Soon!
+
+## Easy ECO
+- Coming Soon!
+
+# About Our Plugins
+- Details soon!
