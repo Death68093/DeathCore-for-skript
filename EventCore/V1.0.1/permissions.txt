@@ -1,0 +1,63 @@
+# Admin / EC Commands
+- dc.admin
+- dc.admin.sethost
+- dc.admin.grantperm
+
+# Host / Event Management
+- dc.host.timer
+- dc.host.eventcooldown
+- dc.host.setevent
+- dc.host.startevent
+
+# Host / Tokens
+- dc.host.token.addtoken
+- dc.host.token.remtoken
+- dc.host.token.accepttoken
+
+# Host / Teleports
+- dc.host.tp.alive
+- dc.host.tp.dead
+- dc.host.tp.all
+
+# Host / Revive / Life Management
+- dc.host.revive.all
+- dc.host.permission.revive.player
+
+# Host / Warps
+- dc.host.setspawn
+- dc.host.warps.setwarp
+- dc.host.warps.delwarp
+- dc.host.warps.viewwarps
+
+# Host / Wins
+- dc.host.win.addwin
+- dc.host.win.remwin
+
+# Host / Gamemode / Player Management
+- dc.gamemodes.survival
+- dc.gamemodes.creative
+- dc.gamemodes.spectator
+- dc.gamemodes.adventure
+- dc.host.heal.player
+- dc.host.heal.all
+- dc.host.heal.dead
+- dc.host.heal.alive
+- dc.host.kill.player
+- dc.host.kill.all
+- dc.host.kill.dead
+- dc.host.kill.alive
+
+# Host / Event / Quick Settings
+- dc.host.toggle.pvp
+- dc.host.toggle.blockbreak
+- dc.host.toggle.blockplace
+- dc.host.toggle.storageaccess
+
+# Host / Arena
+- dc.host.arena.setcorners
+- dc.host.arena.setfloor
+- dc.host.arena.setroof
+- dc.host.arena.clear
+- dc.host.event.dropanvils
+- dc.host.raiselava
+- dc.host.resetlava
